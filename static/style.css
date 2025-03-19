@@ -1,0 +1,495 @@
+/* administrator part */
+
+
+/* login and signup css */
+
+.*
+{
+    margin: 0px;
+    box-sizing: border-box;
+}
+
+.login-signup-button
+{
+    margin: 20px;
+    padding: 5px 20px;
+    background-color: white;
+    color: white;
+    border-radius: 20px; 
+    font-family: Arial, Helvetica, sans-serif;   
+    font-size: large;
+}
+
+.blank-top
+{
+    height: 180px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    color: greenyellow;
+    /* background-color: red; */
+    padding-top: 50px;
+    
+}
+
+.blank-top-signup
+{
+    height: 65px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    color: greenyellow;
+}
+    
+
+
+.panel
+{
+    width: 70%;
+    margin: auto;
+    height: 500px;
+    text-align: center;
+}
+
+.input-form
+{
+    /* border: 1px solid blue; */
+    margin: auto;
+    width: 400px;
+    height: 400px;
+    margin-top: 50px;
+    border-radius: 20px;
+}
+
+/* admin part changes */
+
+.bigbox
+{
+    padding: 20px 60px;
+}
+
+.container {
+    display: flex;
+    justify-content: space-around;
+}
+.table-container {
+    border: 1px solid black;
+    border-radius: 10px;
+    padding: 10px;
+    margin: 80px;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+th, td {
+    text-align: left;
+    padding: 8px;
+}
+th {
+    font-weight: bold;
+    text-align: center;
+}
+.button-row td {
+    text-align: center;
+}
+.button-row button {
+    background-color:rgb(237, 159, 159);
+    border: 1px solid black;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+.add-chapter-button {
+    border: 1px solid green;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    
+}
+.edit-delete-button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+
+/* admin dashboard css */
+
+.header
+{
+    padding-top: 20px;
+    margin: 0%;
+    width: 100%;
+    height: 50px;
+    /* background-color: red; */
+    text-align: center;
+    font-size: xx-large;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.bordertime
+{
+    border: 2px solid black;
+    border-radius: 20px;
+    height: 600px;
+}
+.button-container 
+{
+    padding-left: 20px;
+    display: flex;
+    align-items: center; 
+    border: 2px solid black;
+    height: 60px;
+    border-radius: 10px;
+    /* background-color: red; */
+    border-radius: 20px;
+    margin-top: 30px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+  
+  .nav-button 
+  {
+    background-color: transparent; 
+    text-align: center;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+    margin: 0%;
+    padding: 0px 4px;
+    border: none;
+    color: green;
+    font-family: cursive;
+}
+  
+  .nav-button:hover {
+    background-color: rgba(0, 128, 0, 0.1); 
+  }
+  
+
+.search
+{
+    font-size: larger;
+    margin-left: 200px;
+    padding: 0px 50px;
+    height: 30px;
+}
+
+.searching
+{
+    height: 30px;
+    color: brown;
+}
+
+.text
+{
+    margin-left: 300px;
+    font-size: larger;
+    color: blueviolet;
+}
+
+.adding-button
+{
+    margin: 0%;
+    padding: 14px 14px;
+    background-color: rgb(164, 212, 19) ;
+    border-radius: 20px;
+    justify-content: center;
+    font-size: larger;
+}
+
+
+/* new-subject css */
+
+.new
+{
+    width: 100%;
+    height: auto;
+    text-align: center;
+    font-size: xx-large;
+    color: gold;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    /* background-color: red; */
+    padding-top: 40px;
+}
+
+.name
+{
+    margin-top: 150px;
+    text-align: center;
+    font-size: larger;
+
+}
+
+
+.desc
+{
+    margin-top: 50px ;
+    text-align: center;
+    font-size: larger;
+}
+
+/* new-chapter css */
+/* new-subject css */
+
+.new
+{
+    width: 100%;
+    height: auto;
+    text-align: center;
+    font-size: xx-large;
+    color: gold;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    /* background-color: red; */
+}
+
+.name
+{
+    margin-top: 150px;
+    text-align: center;
+    font-size: larger;
+
+}
+
+.desc
+{
+    margin-top: 50px ;
+    text-align: center;
+    font-size: larger;
+}
+
+
+.save
+{
+    background-color: lightblue;
+    border-radius: 10px;
+    font-size: xx-large;
+    margin-top: 70px;
+}
+
+.cancel
+{
+    background-color: lightblue;
+    border-radius: 10px;
+    font-size: xx-large;
+    margin-left: 30px;
+}
+
+/* new question css */
+
+.name1
+{
+    margin-top: 80px;
+    text-align: center;
+    font-size: larger;
+}
+
+.que-new
+{
+    margin-top: 20px ;
+    text-align: center;
+    font-size: larger;
+}
+
+
+/* .tot-option
+{
+    width: 40%;
+    border: 2px solid black;
+    justify-content: center;
+} */
+
+.option
+{
+    border: 2px solid black;
+    border-radius: 10px;
+    width: 40%;
+    justify-content: center;    
+    margin-top: 60px;
+}
+
+.savenext
+{
+    background-color: lightblue;
+    border-radius: 10px;
+    font-size: xx-large;
+    margin-top: 70px;
+}
+
+.close
+{
+    background-color: lightblue;
+    border-radius: 10px;
+    font-size: xx-large;
+    margin-left: 30px;
+}
+
+/* new-quiz css */
+
+.descquiz
+{
+    margin-top: 50px ;
+    text-align: center;
+    font-size: larger;
+}
+
+
+/* user part */
+
+.topuser
+{
+    margin-top: 50px;
+    border: 2px solid blue;
+    border-radius: 20px;
+    padding: 30px 70px;
+    text-align: center;
+    /* background-color: red; */
+    border-collapse: collapse;
+    font-size: larger;
+    margin-left: 60px;
+    margin-right: 60px;
+}
+
+table {
+    margin-top: 10px;
+    width: 100%;
+    border-collapse: collapse;
+    border: 2px solid black;
+    border-radius: 10px;
+    overflow: hidden;
+    /* background-color: red; */
+  }
+  
+
+  th, td {
+    padding: 10px;
+    text-align: left;
+  }
+  
+
+  .view-button {
+    background-color: #B0E2FF;
+    color: #007BFF;
+    border: 1px solid #007BFF;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 5px;
+  }
+  
+  .start-button {
+   background-color: #90EE90;
+    color: #228B22;
+    border: 1px solid #228B22;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  /* user scores css */
+
+  /* table {
+    width: auto;
+    border-collapse: collapse;
+    font-family: sans-serif;
+    letter-spacing: 1px;
+    background-color: red;
+    margin-top: 100px;
+    margin-left: 430px;
+  } */
+  
+  th, td {
+    text-align: left;
+    padding: 8px;
+  }
+  
+/* quiz question css */
+
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #f8f8f8;
+}
+.quiz-container {
+    width: 50%;
+    margin: auto;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px gray;
+    margin-top: 50px;
+}
+.question-box {
+    border: 2px solid blue;
+    padding: 10px;
+    border-radius: 10px;
+    margin: 20px 0;
+}
+.options {
+    text-align: left;
+    margin-left: 45%;
+}
+.timer {
+    float: right;
+    background: lightblue;
+    padding: 10px;
+    border-radius: 20px;
+}
+.question-number {
+    float: left;
+    background: lightyellow;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+.buttons {
+    margin-top: 20px;
+}
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 5px;
+}
+.save1 {
+    background: lightblue;
+}
+.submit {
+    background: lightgray;
+}
+
+/* view quiz css */
+
+
+        body1{
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .quiz-box {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+            width: 300px;
+            text-align: center;
+        }
+        .quiz-box input, .quiz-box button {
+            width: 80%;
+            padding: 5px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .quiz-box button {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            border: none;
+            padding: 8px;
+        }
+        .quiz-box button:hover {
+            background-color: #45a049;
+        }

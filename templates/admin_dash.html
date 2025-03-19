@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="/static/style.css">
+    <title>Admin Dashboard</title>
+</head>
+
+<body>
+    <header class="header">Admin Dashboard</header>
+
+    <div class="bordertime">
+        <div class="button-container">
+            <a href="/admin_dash"><button class="nav-button">Home |</button></a>
+            <a href="/quiz-mgmt"><button class="nav-button">Quiz |</button></a>
+            <button class="nav-button">Summary |</button>
+            <a href="/login"><button class="nav-button">Logout</button></a>
+            <input class="search" type="search" placeholder="Search">
+            <button class="searching">Search</button>
+            <h4 class="text">Welcome {{ name }}</h4>
+        </div>
+        
+        {% if subjects %}
+        <div class="container">
+            <!-- {% for subject in subjects %}
+            <div class="table-container">
+                <center>
+                    <h2>{{ subject.name }}</h2>
+                </center>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Chapter Name</th>
+                            <th>Number of Questions</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for chapter in subject.chapters.all() %}
+                        <tr>
+                            <td>{{ chapter.name }}</td>
+                            <td>{{ chapter.num_questions }}</td>
+                            <td>
+                                <a href="{{ url_for('edit_chapter', chapter_id=chapter.id) }}">
+                                    <button type="button" class="edit-delete-button">Edit</button></a> /
+                                <a href="{{ url_for('delete_chapter', chapter_id=chapter.id) }}">
+                                    <button type="button" class="edit-delete-button">Delete</button></a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        <tr class="button-row">
+                            <td colspan="3">
+                                <a href="{{ url_for('new_chapter', subject_id=subject.id) }}">
+                                    <button type="button" class="add-chapter-button">+ Chapter</button>
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            {% endfor %} -->
+        </div>
+        {% else %}
+        <h3>No Subjects available</h3>
+        {% endif %}
+
+        <!-- <h3>Available Subjects</h3>
+        <ul>
+            {% for subject in subjects %}
+            <li>
+                {{ subject.name }}
+                <form action="{{ url_for('edit_subject', subject_id=subject.id) }}" method="POST" style="display: inline;">
+                    <input type="text" name="name" placeholder="New name" required>
+                    <button type="submit" class="edit-button">Edit</button>
+                </form>
+                <a href="{{ url_for('delete_subject', subject_id=subject.id) }}">
+                    <button type="button" class="delete-button">Delete</button>
+                </a>
+            </li>
+            {% endfor %}
+        </ul> -->
+
+        <center>
+            <a href="/new-subject">
+                <button type="button" class="adding-button">+ Add New Subject</button>
+            </a>
+        </center>
+    </div>
+</body>
+
+</html>

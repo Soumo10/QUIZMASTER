@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="stylesheet" href="/static/style.css">
+  <title>User dashboard</title>
+</head>
+
+<body>
+  <header class="header">
+    User Dashboard
+  </header>
+
+  <!-- top-navbar -->
+  <div class="bordertime">
+    <div class="button-container">
+      <a href="/user_dash.html">
+        <button class="nav-button">Home |</button>
+      </a>
+      <a href="/quiz_scores.html">
+        <button class="nav-button">Score |</button>
+      </a>
+      <button class="nav-button">Summary |</button>
+      <a href="/login.html">
+        <button class="nav-button">Logout</button>
+      </a>
+      <input class="search" type="search" placeholder="Search">
+      <button class="searching">
+        <search>Search</search>
+      </button>
+      </input>
+      <h4 class="text">Welcome {{name}}</h4>
+    </div>
+
+    <div class="topuser">Upcoming Quizes
+      <table>
+        <thead>
+
+          <tr class="userhead">
+            <th>ID</th>
+            <th>No. of Questions</th>
+            <th>Date</th>
+            <th>Duration(hh:mm)</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>05</td>
+            <td>10</td>
+            <td><input type="date"></td>
+            <td><input type="time"></td>
+            <td>
+              <a href="/view_quiz.html">
+              <button class="view-button">View</button>
+            </a>
+            <a href="/quiz_ques.html"></a>
+              <button class="start-button">Start</button>
+            </td>
+          </tr>
+          <tr>
+            <td>10</td>
+            <td>10</td>
+            <td><input type="date"></td>
+            <td><input type="time"></td>
+            </td>
+            <td>
+              <button class="view-button">View</button>
+              <button class="start-button">Start</button>
+            </td>
+          </tr>
+          <tr>
+            <td>15</td>
+            <td>15</td>
+            <td><input type="date"></td>
+            <td><input type="time"></td>
+            <td>
+              <button class="view-button">View</button>
+              <button class="start-button">Start</ </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+</body>
+
+</html>

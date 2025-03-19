@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>New Question</title>
+</head>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+  <form action="/new-question" method="POST">
+    <div class="new"> New Question</div>
+    <div class="name1"> Chapter ID :
+      <input type="text">
+    </div>
+    <div class="que-new"> Question Title :
+      <input type="text">
+    </div>
+    <div class="que-new"> Question Statement :
+      <input class="bigbox" type="text">
+    </div>
+    <center class="tot-option">
+      <div class="option">Select Correct Option
+        <table>
+          <tr>
+            <th>Option 1)</th>
+            <td><input type="text"></td>
+          </tr>
+          <tr>
+            <th>Option 2)</th>
+            <td><input type="text"></td>
+          </tr>
+          <tr>
+            <th>Option 3)</th>
+            <td><input type="text"></td>
+          </tr>
+          <tr>
+            <th>Option 4)</th>
+            <td><input type="text"></td>
+          </tr>
+          <tr>
+            <th>Correct option</th>
+            <td><input type="number" value="2" min="1" max="4"></td>
+          </tr>
+        </table>
+      </div>
+  </form>
+  </center>
+  <center>
+    <button class="savenext">Save and Next</button>
+    <button class="close">Close </button>
+  </center>
+</body>
+
+</html>
