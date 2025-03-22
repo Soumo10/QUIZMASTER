@@ -3,52 +3,46 @@
 
 /* login and signup css */
 
-.*
-{
+.* {
     margin: 0px;
     box-sizing: border-box;
 }
 
-.login-signup-button
-{
+.login-signup-button {
     margin: 20px;
     padding: 5px 20px;
     background-color: white;
     color: white;
-    border-radius: 20px; 
-    font-family: Arial, Helvetica, sans-serif;   
+    border-radius: 20px;
+    font-family: Arial, Helvetica, sans-serif;
     font-size: large;
 }
 
-.blank-top
-{
+.blank-top {
     height: 180px;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     color: greenyellow;
     /* background-color: red; */
     padding-top: 50px;
-    
+
 }
 
-.blank-top-signup
-{
+.blank-top-signup {
     height: 65px;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     color: greenyellow;
 }
-    
 
 
-.panel
-{
+
+.panel {
     width: 70%;
     margin: auto;
     height: 500px;
     text-align: center;
 }
 
-.input-form
-{
+.input-form {
     /* border: 1px solid blue; */
     margin: auto;
     width: 400px;
@@ -59,8 +53,7 @@
 
 /* admin part changes */
 
-.bigbox
-{
+.bigbox {
     padding: 20px 60px;
 }
 
@@ -68,40 +61,49 @@
     display: flex;
     justify-content: space-around;
 }
+
 .table-container {
     border: 1px solid black;
     border-radius: 10px;
     padding: 10px;
     margin: 80px;
 }
+
 table {
     width: 100%;
     border-collapse: collapse;
 }
-th, td {
+
+th,
+td {
     text-align: left;
     padding: 8px;
 }
+
 th {
     font-weight: bold;
     text-align: center;
 }
+
 .button-row td {
     text-align: center;
 }
+
 .button-row button {
-    background-color:rgb(237, 159, 159);
+    background-color: rgb(237, 159, 159);
     border: 1px solid black;
     padding: 5px 10px;
     cursor: pointer;
 }
+
 .add-chapter-button {
     border: 1px solid green;
     border-radius: 5px;
     padding: 5px 10px;
     cursor: pointer;
-    
+
 }
+
 .edit-delete-button {
     background-color: transparent;
     border: none;
@@ -112,8 +114,7 @@ th {
 
 /* admin dashboard css */
 
-.header
-{
+.header {
     padding-top: 20px;
     margin: 0%;
     width: 100%;
@@ -124,17 +125,16 @@ th {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
-.bordertime
-{
+.bordertime {
     border: 2px solid black;
     border-radius: 20px;
     height: 600px;
 }
-.button-container 
-{
+
+.button-container {
     padding-left: 20px;
     display: flex;
-    align-items: center; 
+    align-items: center;
     border: 2px solid black;
     height: 60px;
     border-radius: 10px;
@@ -144,10 +144,9 @@ th {
     margin-left: 10px;
     margin-right: 10px;
 }
-  
-  .nav-button 
-  {
-    background-color: transparent; 
+
+.nav-button {
+    background-color: transparent;
     text-align: center;
     display: inline-block;
     font-size: 16px;
@@ -158,38 +157,34 @@ th {
     color: green;
     font-family: cursive;
 }
-  
-  .nav-button:hover {
-    background-color: rgba(0, 128, 0, 0.1); 
-  }
-  
 
-.search
-{
+.nav-button:hover {
+    background-color: rgba(0, 128, 0, 0.1);
+}
+
+
+.search {
     font-size: larger;
     margin-left: 200px;
     padding: 0px 50px;
     height: 30px;
 }
 
-.searching
-{
+.searching {
     height: 30px;
     color: brown;
 }
 
-.text
-{
+.text {
     margin-left: 300px;
     font-size: larger;
     color: blueviolet;
 }
 
-.adding-button
-{
+.adding-button {
     margin: 0%;
     padding: 14px 14px;
-    background-color: rgb(164, 212, 19) ;
+    background-color: rgb(164, 212, 19);
     border-radius: 20px;
     justify-content: center;
     font-size: larger;
@@ -198,8 +193,7 @@ th {
 
 /* new-subject css */
 
-.new
-{
+.new {
     width: 100%;
     height: auto;
     text-align: center;
@@ -210,8 +204,7 @@ th {
     padding-top: 40px;
 }
 
-.name
-{
+.name {
     margin-top: 150px;
     text-align: center;
     font-size: larger;
@@ -219,9 +212,8 @@ th {
 }
 
 
-.desc
-{
-    margin-top: 50px ;
+.desc {
+    margin-top: 50px;
     text-align: center;
     font-size: larger;
 }
@@ -229,8 +221,7 @@ th {
 /* new-chapter css */
 /* new-subject css */
 
-.new
-{
+.new {
     width: 100%;
     height: auto;
     text-align: center;
@@ -240,32 +231,28 @@ th {
     /* background-color: red; */
 }
 
-.name
-{
+.name {
     margin-top: 150px;
     text-align: center;
     font-size: larger;
 
 }
 
-.desc
-{
-    margin-top: 50px ;
+.desc {
+    margin-top: 50px;
     text-align: center;
     font-size: larger;
 }
 
 
-.save
-{
+.save {
     background-color: lightblue;
     border-radius: 10px;
     font-size: xx-large;
     margin-top: 70px;
 }
 
-.cancel
-{
+.cancel {
     background-color: lightblue;
     border-radius: 10px;
     font-size: xx-large;
@@ -274,16 +261,14 @@ th {
 
 /* new question css */
 
-.name1
-{
+.name1 {
     margin-top: 80px;
     text-align: center;
     font-size: larger;
 }
 
-.que-new
-{
-    margin-top: 20px ;
+.que-new {
+    margin-top: 20px;
     text-align: center;
     font-size: larger;
 }
@@ -296,25 +281,22 @@ th {
     justify-content: center;
 } */
 
-.option
-{
+.option {
     border: 2px solid black;
     border-radius: 10px;
     width: 40%;
-    justify-content: center;    
+    justify-content: center;
     margin-top: 60px;
 }
 
-.savenext
-{
+.savenext {
     background-color: lightblue;
     border-radius: 10px;
     font-size: xx-large;
     margin-top: 70px;
 }
 
-.close
-{
+.close {
     background-color: lightblue;
     border-radius: 10px;
     font-size: xx-large;
@@ -323,18 +305,128 @@ th {
 
 /* new-quiz css */
 
-.descquiz
-{
-    margin-top: 50px ;
+.descquiz {
+    margin-top: 50px;
     text-align: center;
     font-size: larger;
+}
+
+/* show quiz css */
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f6f8;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+h1,
+h2,
+h3 {
+    color: #222;
+}
+
+a {
+    text-decoration: none;
+    color: #007bff;
+}
+
+.header2{
+    padding: 20px;
+    background-color: white;
+    color: black;
+    text-align: center;
+    font-size: xx-large;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.container {
+    max-width: 900px;
+    margin: 20px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.quiz-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #ffffff;
+}
+
+.quiz-table th,
+.quiz-table td {
+    padding: 12px;
+    border-bottom: 1px solid #eaeaea;
+}
+
+.quiz-table th {
+    background-color: #f9fafb;
+    font-weight: bold;
+}
+
+.action-btn {
+    padding: 6px 12px;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.edit-btn {
+    background-color: #ffc107;
+    color: #000;
+}
+
+.delete-btn {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+.view-btn {
+    background-color: #17a2b8;
+    color: #fff;
+}
+
+.no-quizzes {
+    text-align: center;
+    margin: 40px 0;
+    font-style: italic;
+    color: #888;
+    font-size: 18px;
+}
+
+.add-quiz-btn {
+    background-color: #007bff;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+    display: block;
+    margin: 20px auto;
+}
+
+.add-quiz-btn:hover {
+    background-color: #0056b3;
+}
+
+.back-btn {
+    padding: 10px 18px;
+    background-color: #6c757d;
+    color: white;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.back-btn:hover {
+    background-color: #5a6268;
 }
 
 
 /* user part */
 
-.topuser
-{
+.topuser {
     margin-top: 50px;
     border: 2px solid blue;
     border-radius: 20px;
@@ -355,16 +447,17 @@ table {
     border-radius: 10px;
     overflow: hidden;
     /* background-color: red; */
-  }
-  
+}
 
-  th, td {
+
+th,
+td {
     padding: 10px;
     text-align: left;
-  }
-  
+}
 
-  .view-button {
+
+.view-button {
     background-color: #B0E2FF;
     color: #007BFF;
     border: 1px solid #007BFF;
@@ -372,20 +465,20 @@ table {
     border-radius: 5px;
     cursor: pointer;
     margin-right: 5px;
-  }
-  
-  .start-button {
-   background-color: #90EE90;
+}
+
+.start-button {
+    background-color: #90EE90;
     color: #228B22;
     border: 1px solid #228B22;
     padding: 5px 10px;
     border-radius: 5px;
     cursor: pointer;
-  }
+}
 
-  /* user scores css */
+/* user scores css */
 
-  /* table {
+/* table {
     width: auto;
     border-collapse: collapse;
     font-family: sans-serif;
@@ -394,12 +487,13 @@ table {
     margin-top: 100px;
     margin-left: 430px;
   } */
-  
-  th, td {
+
+th,
+td {
     text-align: left;
     padding: 8px;
-  }
-  
+}
+
 /* quiz question css */
 
 body {
@@ -407,6 +501,7 @@ body {
     text-align: center;
     background-color: #f8f8f8;
 }
+
 .quiz-container {
     width: 50%;
     margin: auto;
@@ -416,22 +511,26 @@ body {
     box-shadow: 0px 0px 10px gray;
     margin-top: 50px;
 }
+
 .question-box {
     border: 2px solid blue;
     padding: 10px;
     border-radius: 10px;
     margin: 20px 0;
 }
+
 .options {
     text-align: left;
     margin-left: 45%;
 }
+
 .timer {
     float: right;
     background: lightblue;
     padding: 10px;
     border-radius: 20px;
 }
+
 .question-number {
     float: left;
     background: lightyellow;
@@ -439,9 +538,11 @@ body {
     border-radius: 5px;
     font-weight: bold;
 }
+
 .buttons {
     margin-top: 20px;
 }
+
 .btn {
     padding: 10px 20px;
     border: none;
@@ -449,9 +550,11 @@ body {
     cursor: pointer;
     margin: 5px;
 }
+
 .save1 {
     background: lightblue;
 }
+
 .submit {
     background: lightgray;
 }
@@ -459,37 +562,42 @@ body {
 /* view quiz css */
 
 
-        body1{
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f0f0f0;
-        }
-        .quiz-box {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
-            width: 300px;
-            text-align: center;
-        }
-        .quiz-box input, .quiz-box button {
-            width: 80%;
-            padding: 5px;
-            margin: 5px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            text-align: center;
-        }
-        .quiz-box button {
-            background-color: #4CAF50;
-            color: white;
-            cursor: pointer;
-            border: none;
-            padding: 8px;
-        }
-        .quiz-box button:hover {
-            background-color: #45a049;
-        }
+body1 {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0;
+}
+
+.quiz-box {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+    width: 300px;
+    text-align: center;
+}
+
+.quiz-box input,
+.quiz-box button {
+    width: 80%;
+    padding: 5px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.quiz-box button {
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+    border: none;
+    padding: 8px;
+}
+
+.quiz-box button:hover {
+    background-color: #45a049;
+}

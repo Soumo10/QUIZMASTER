@@ -1,48 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <link rel="stylesheet" href="/static/style.css">
-    <title>Quiz Scores</title>
-</head>
-<body>
-    <!-- top-navbar -->
-    <div class="bordertime">
-        <div class="button-container">
-            <button class="nav-button">Home |</button>
-            <button class="nav-button">Quiz |</button>
-            <button class="nav-button">Summary |</button>
-            <button class="nav-button">Logout</button>
-            <input class="search" type="search" placeholder="Search">
-                <button class="searching"><search>Search</search></button>
-            </input>
-            <h4 class="text">Welcome User</h4>
-        </div>
-        <div class="topuser">Quiz Scores
 
-        <table> 
-            <thead>  
-              <tr>
-                <th>ID </th>
-                <th>No. of Questions </th>
-                <th>Date </th>
-                <th>Score </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>1</td>
-                <td>05</td>
-                <td><input type="date"></td>                
-                <td>3/5</td>
-              </tr>
-              <tr>
-                <td>2</td>
-                <td>15</td>
-                <td><input type="date"></td>                
-                <td>12/15</td>
-              </tr>
-              
-            </tbody>
-          </table>
+<head>
+  <link rel="stylesheet" href="/static/style.css">
+  <title>Quiz Scores</title>
+</head>
+
+<body>
+  <header class="header">
+    My Quiz Scores
+  </header>
+
+  <!-- top-navbar -->
+  <div class="bordertime">
+    <div class="button-container">
+      <a href="{{ url_for('user_dash') }}">
+        <button class="nav-button">Home |</button>
+      </a>
+      <a href="{{ url_for('quiz_scores') }}">
+        <button class="nav-button">Score |</button>
+      </a>
+      <button class="nav-button">Summary |</button>
+      <a href="{{ url_for('user_login') }}">
+        <button class="nav-button">Logout</button>
+      </a>
+      <h4 class="text">Welcome {{ user.full_name }}</h4>
+    </div>
+
+    <div class="topuser">
+      <h2>Your Quiz Performance</h2>
+      <table>
+        <thead>
+          <tr class="userhead">
+            <th>Quiz Title</th>
+            <th>Subject</th>
+            <th>Chapter</th>
+            <th>Score (%)</th>
+            <th>Attempt Date</th>
+            <th>Total Attempts</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for score in scores %}
+          <tr>
+            <td>{{ score.quiz.title }}</td>
+            <td>{{ score.quiz.subject.name }}</td>
+            <td>{{ score.quiz.chapter.desc }}</td>
+            <td>{{ score.score }}%</td>
+            <td>{{ score.attempt_date }}</td>
+            <td>
+              {% for attempt in attempts %}
+                {% if attempt.quiz_id == score.quiz_id %}
+                  {{ attempt.attempt_count }}
+                {% endif %}
+              {% endfor %}
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="6" class="text-center">You haven't taken any quizzes yet.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
 </body>
+
 </html>

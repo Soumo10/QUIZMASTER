@@ -14,14 +14,14 @@
   <!-- top-navbar -->
   <div class="bordertime">
     <div class="button-container">
-      <a href="/user_dash.html">
+      <a href="{{ url_for('user_dash') }}">
         <button class="nav-button">Home |</button>
       </a>
-      <a href="/quiz_scores.html">
+      <a href="{{ url_for('quiz_scores') }}">
         <button class="nav-button">Score |</button>
       </a>
       <button class="nav-button">Summary |</button>
-      <a href="/login.html">
+      <a href="{{ url_for('user_login') }}">
         <button class="nav-button">Logout</button>
       </a>
       <input class="search" type="search" placeholder="Search">
@@ -29,59 +29,52 @@
         <search>Search</search>
       </button>
       </input>
-      <h4 class="text">Welcome {{name}}</h4>
+      <h4 class="text">Welcome {{ full_name }}</h4>
     </div>
 
-    <div class="topuser">Upcoming Quizes
+    <div class="topuser">Available Quizzes
+      {% if msg %}
+      <div class="alert">{{ msg }}</div>
+      {% endif %}
       <table>
         <thead>
-
           <tr class="userhead">
             <th>ID</th>
+            <th>Title</th>
+            <th>Subject</th>
+            <th>Chapter</th>
             <th>No. of Questions</th>
-            <th>Date</th>
-            <th>Duration(hh:mm)</th>
+            <th>Duration</th>
             <th>Action</th>
           </tr>
         </thead>
         <tbody>
+          {% for quiz in quizzes %}
           <tr>
-            <td>05</td>
-            <td>10</td>
-            <td><input type="date"></td>
-            <td><input type="time"></td>
+            <td>{{ quiz.id }}</td>
+            <td>{{ quiz.title }}</td>
+            <td>{{ quiz.subject.name }}</td>
+            <td>{{ quiz.chapter.desc }}</td>
+            <td>{{ quiz.questions|length }}</td>
+            <td>{{ quiz.duration }}</td>
             <td>
-              <a href="/view_quiz.html">
-              <button class="view-button">View</button>
-            </a>
-            <a href="/quiz_ques.html"></a>
-              <button class="start-button">Start</button>
+              <a href="{{ url_for('view_quiz', quiz_id=quiz.id) }}">
+                <button class="view-button">View</button>
+              </a>
+              <a href="{{ url_for('take_quiz', quiz_id=quiz.id) }}">
+                <button class="start-button">Start</button>
+              </a>
             </td>
           </tr>
+          {% else %}
           <tr>
-            <td>10</td>
-            <td>10</td>
-            <td><input type="date"></td>
-            <td><input type="time"></td>
-            </td>
-            <td>
-              <button class="view-button">View</button>
-              <button class="start-button">Start</button>
-            </td>
+            <td colspan="7" class="text-center">No quizzes available at the moment.</td>
           </tr>
-          <tr>
-            <td>15</td>
-            <td>15</td>
-            <td><input type="date"></td>
-            <td><input type="time"></td>
-            <td>
-              <button class="view-button">View</button>
-              <button class="start-button">Start</ </button>
-            </td>
-          </tr>
+          {% endfor %}
         </tbody>
       </table>
     </div>
+  </div>
 </body>
 
 </html>

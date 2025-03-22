@@ -7,10 +7,10 @@ class User(db.Model):
     __tablename__ = "user_info"
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String, unique=True, nullable=False)
-    pwd = db.Column(db.String, nullable=False)  # Consider using password hashing in production
-    full_name = db.Column(db.String, nullable=False)
-    qual = db.Column(db.String, nullable=False)
-    dob = db.Column(db.String, nullable=False)
+    pwd = db.Column(db.String, nullable=False) 
+    full_name = db.Column(db.String, nullable=True)
+    qual = db.Column(db.String, nullable=True)
+    dob = db.Column(db.String, nullable=True)
     role = db.Column(db.Integer, nullable=False, default=1)  # 0 for admin, 1 for regular user
 
 
@@ -19,9 +19,8 @@ class Subject(db.Model):
     __tablename__ = "subjects"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False, unique=True)
-        desc = db.Column(db.String, nullable=False, unique=True)
-
-    # chapters = db.relationship('Chapter', backref='subject', lazy='dynamic')
+    desc = db.Column(db.String, nullable=False, unique=True)
+    chapters = db.relationship('Chapter', backref='subject', lazy='dynamic')
     
     def __repr__(self):
         return f"Subject('{self.name}')"
@@ -31,6 +30,7 @@ class Subject(db.Model):
 class Chapter(db.Model):
     __tablename__ = "chapters"
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, nullable=False, unique=True)
     desc = db.Column(db.String, nullable=False, unique=True)
     # num_questions = db.Column(db.Integer, nullable=False, default=0)
     subject_id = db.Column(db.Integer, db.ForeignKey('subjects.id'), nullable=False)
