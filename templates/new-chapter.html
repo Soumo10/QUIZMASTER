@@ -15,7 +15,8 @@
         </div>
         <center>
             <button type="submit" class="save">Save</button>
-            <a href="{{ url_for('admin_dashboard') }}"><button type="button" class="cancel">Cancel</button></a>
+            <a href="{{ url_for('show_chapters', subject_id=subject_id) }}">
+            <button type="button" class="cancel">Cancel</button></a>        
         </center>
     </form>
 </body>

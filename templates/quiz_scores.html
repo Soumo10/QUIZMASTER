@@ -35,6 +35,7 @@
             <th>Quiz Title</th>
             <th>Subject</th>
             <th>Chapter</th>
+            <th>Correct Answers</th>
             <th>Score (%)</th>
             <th>Attempt Date</th>
             <th>Total Attempts</th>
@@ -45,7 +46,7 @@
           <tr>
             <td>{{ score.quiz.title }}</td>
             <td>{{ score.quiz.subject.name }}</td>
-            <td>{{ score.quiz.chapter.desc }}</td>
+            <td>{{ score.quiz.chapter.name }}</td>
             <td>{{ score.score }}%</td>
             <td>{{ score.attempt_date }}</td>
             <td>

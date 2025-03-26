@@ -30,16 +30,15 @@ class Subject(db.Model):
 class Chapter(db.Model):
     __tablename__ = "chapters"
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String, nullable=False, unique=True)
-    desc = db.Column(db.String, nullable=False, unique=True)
-    # num_questions = db.Column(db.Integer, nullable=False, default=0)
+    name = db.Column(db.String, nullable=False)
+    desc = db.Column(db.String, nullable=False)
     subject_id = db.Column(db.Integer, db.ForeignKey('subjects.id'), nullable=False)
     
     # Add relationship to questions
     questions = db.relationship('Question', backref='chapter', lazy='dynamic')
     
     def __repr__(self):
-        return f"Chapter('{self.name}', {self.num_questions} questions)"
+        return f"Chapter('{self.name}')"
 
 
 # Quiz model

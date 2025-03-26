@@ -3,9 +3,7 @@
 
 <head>
     <link rel="stylesheet" href="/static/style.css">
-    <!-- Add Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css">
-    <!-- Make sure to include Bootstrap JavaScript AFTER loading jQuery -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
     <title>Admin Dashboard</title>
 </head>
@@ -16,8 +14,9 @@
     <div class="bordertime">
         <div class="button-container">
             <a href="/admin_dash"><button class="nav-button">Home |</button></a>
-            <a href="/quiz-mgmt"><button class="nav-button">Quiz |</button></a>
-            <button class="nav-button">Summary |</button>
+            <a href="/show_quizzes"><button class="nav-button">Quiz |</button></a>
+            <a href="/show_user"><button class="nav-button">Users |</button></a>
+            <a href="/summary_charts"><button class="nav-button">Summary |</button></a>
             <a href="/login"><button class="nav-button">Logout</button></a>
             <input class="search" type="search" placeholder="Search">
             <button class="searching">Search</button>
@@ -117,7 +116,7 @@
             const editModal = document.getElementById('editSubjectModal');
             if (editModal) {
                 editModal.addEventListener('show.bs.modal', function(event) {
-                    // Button that triggered the modal
+
                     const button = event.relatedTarget;
                     
                     // Extract info from data attributes
@@ -125,7 +124,7 @@
                     const subjectName = button.getAttribute('data-subject-name');
                     const subjectDesc = button.getAttribute('data-subject-desc');
                     
-                    // Update the modal's form action and fields
+
                     const form = document.getElementById('editSubjectForm');
                     form.action = `/edit_subject/${subjectId}`;
                     

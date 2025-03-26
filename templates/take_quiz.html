@@ -15,23 +15,32 @@
     <div class="quiz-info">
       <div class="quiz-timer" id="timer">Time Remaining: <span id="time">00:00</span></div>
       <div class="quiz-subject">Subject: {{ quiz.subject.name }}</div>
-      <div class="quiz-chapter">Chapter: {{ quiz.chapter.desc }}</div>
+      <div class="quiz-chapter">Chapter: {{ quiz.chapter.name }}</div>
+    </div>
+
+    <div class="progress-container">
+      <div class="progress-bar" id="progressBar" style="width: 0%"></div>
     </div>
 
     <form method="POST" action="{{ url_for('take_quiz', quiz_id=quiz.id) }}" id="quiz-form">
+      <input type="hidden" name="email" value="{{ email }}">
+      <input type="hidden" name="start_time" value="{{ start_time }}">
       {% for question in questions %}
-      <div class="question-container">
+      <div class="question-container" id="question-{{ loop.index }}">
         <div class="question-text">
           <p><strong>Q{{ loop.index }}:</strong> {{ question.question_text }}</p>
         </div>
         <div class="options-container">
           {% for option in question.options %}
           <div class="option">
-            <input type="radio" id="option_{{ question.id }}_{{ option.id }}" 
-                   name="question_{{ question.id }}" value="{{ option.id }}" required>
+            <input type="radio" id="option_{{ question.id }}_{{ option.id }}" name="question_{{ question.id }}"
+              value="{{ option.id }}" required class="question-option-{{ question.id }}">
             <label for="option_{{ question.id }}_{{ option.id }}">{{ option.option_text }}</label>
           </div>
           {% endfor %}
+        </div>
+        <div class="question-actions">
+          <button type="button" class="clear-button" data-question-id="{{ question.id }}">Clear Response</button>
         </div>
       </div>
       {% endfor %}
@@ -43,29 +52,70 @@
   </div>
 
   <script>
-    // Set up timer based on quiz duration
-    const duration = "{{ quiz.duration }}";
-    const [hours, minutes] = duration.split(":");
-    let totalSeconds = (parseInt(hours) * 60 * 60) + (parseInt(minutes) * 60);
-    
+    // Initialize timer
+    let totalSeconds = parseInt("{{ quiz.duration }}" || "0") * 60;
+    if (totalSeconds <= 0) totalSeconds = 30 * 60; // Default 30 minutes if duration is invalid
+
     const timerElement = document.getElementById("time");
     const quizForm = document.getElementById("quiz-form");
-    
+    const progressBar = document.getElementById("progressBar");
+
+    // Function to update progress bar
+    function updateProgress() {
+      const totalQuestions = {{ questions|length }};
+      let answeredQuestions = 0;
+      
+      {% for question in questions %}
+      if (document.querySelector('input[name="question_{{ question.id }}"]:checked')) {
+        answeredQuestions++;
+      }
+      {% endfor %}
+      
+      const progressPercentage = (answeredQuestions / totalQuestions) * 100;
+      progressBar.style.width = progressPercentage + "%";
+    }
+
+    // Function to clear options for a specific question
+    function clearOptions(questionId) {
+      console.log("Clearing options for question ID:", questionId);
+      const options = document.querySelectorAll(`input[name="question_${questionId}"]`);
+      options.forEach(option => {
+        option.checked = false;
+      });
+      updateProgress();
+    }
+
+    // Add event listeners to clear buttons
+    document.addEventListener('DOMContentLoaded', function() {
+      const clearButtons = document.querySelectorAll('.clear-button');
+      clearButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          const questionId = this.getAttribute('data-question-id');
+          clearOptions(questionId);
+        });
+      });
+
+      // Add event listeners to radio buttons
+      const radioButtons = document.querySelectorAll('input[type="radio"]');
+      radioButtons.forEach(radio => {
+        radio.addEventListener('change', updateProgress);
+      });
+
+      // Initial progress update
+      updateProgress();
+    });
+
+    // Timer functionality
     const timer = setInterval(() => {
       totalSeconds--;
-      
       if (totalSeconds <= 0) {
         clearInterval(timer);
         alert("Time's up! Your quiz will be submitted automatically.");
         quizForm.submit();
       }
-      
-      const displayHours = Math.floor(totalSeconds / 3600);
-      const displayMinutes = Math.floor((totalSeconds % 3600) / 60);
+      const displayMinutes = Math.floor(totalSeconds / 60);
       const displaySeconds = totalSeconds % 60;
-      
-      timerElement.textContent = 
-        `${String(displayHours).padStart(2, '0')}:${String(displayMinutes).padStart(2, '0')}:${String(displaySeconds).padStart(2, '0')}`;
+      timerElement.textContent = `${String(displayMinutes).padStart(2, '0')}:${String(displaySeconds).padStart(2, '0')}`;
     }, 1000);
   </script>
 </body>

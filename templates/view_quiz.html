@@ -14,10 +14,10 @@
   <!-- top-navbar -->
   <div class="bordertime">
     <div class="button-container">
-      <a href="{{ url_for('user_dash') }}">
+      <a href="{{ url_for('user_dash', email=email) }}">
         <button class="nav-button">Home |</button>
       </a>
-      <a href="{{ url_for('quiz_scores') }}">
+      <a href="{{ url_for('quiz_scores', email=email) }}">
         <button class="nav-button">Score |</button>
       </a>
       <button class="nav-button">Summary |</button>
@@ -37,7 +37,7 @@
         </tr>
         <tr>
           <th>Chapter:</th>
-          <td>{{ quiz.chapter.desc }}</td>
+          <td>{{ quiz.chapter.name }}</td>
         </tr>
         <tr>
           <th>Number of Questions:</th>
@@ -45,7 +45,7 @@
         </tr>
         <tr>
           <th>Duration:</th>
-          <td>{{ quiz.duration }}</td>
+          <td>{{ quiz.duration }} seconds</td>
         </tr>
         <tr>
           <th>Created On:</th>
@@ -54,10 +54,10 @@
       </table>
       
       <div class="action-buttons">
-        <a href="{{ url_for('take_quiz', quiz_id=quiz.id) }}">
+        <a href="{{ url_for('take_quiz', quiz_id=quiz.id, email=email) }}">
           <button class="start-button">Start Quiz</button>
         </a>
-        <a href="{{ url_for('user_dash') }}">
+        <a href="{{ url_for('user_dash', email=email) }}">
           <button class="back-button">Back to Dashboard</button>
         </a>
       </div>

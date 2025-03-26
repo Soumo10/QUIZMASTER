@@ -41,8 +41,10 @@
                     <tr>
                         <td>{{ loop.index }}</td>
                         <td>{{ quiz.title }}</td>
-                        <td>{{ quiz.duration }} mins</td>
+                        <td>{{ quiz.duration }} seconds</td>
                         <td>{{ quiz.created_at }}</td>
+                        <!-- In show_quiz.html, find this section and update the SHOW button link: -->
+
                         <td>
                             <a href="{{ url_for('manage_questions', quiz_id=quiz.id) }}">
                                 <button class="action-btn view-btn">SHOW</button>
@@ -50,13 +52,12 @@
 
                             <button class="action-btn edit-btn" data-bs-toggle="modal" 
                                 data-bs-target="#editQuizModal"
-                                data-quiz-id="{{ quiz.id }}" 
-                                data-quiz-title="{{ quiz.title }}"
+                                data-quiz-id="{{ quiz.id }}" data-quiz-title="{{ quiz.title }}"
                                 data-quiz-duration="{{ quiz.duration }}"
                                 data-quiz-active="{{ 'True' if quiz.is_active else 'False' }}">
                                 EDIT
                             </button>
-                            
+
                             <a href="{{ url_for('delete_quiz', quiz_id=quiz.id) }}"
                                 onclick="return confirm('Are you sure?')">
                                 <button class="action-btn delete-btn">DELETE</button>
@@ -93,7 +94,7 @@
                                 <input type="text" class="form-control" id="quizTitle" name="title" required>
                             </div>
                             <div class="mb-3">
-                                <label for="quizDuration" class="form-label">Duration (minutes)</label>
+                                <label for="quizDuration" class="form-label">Duration (seconds)</label>
                                 <input type="text" class="form-control" id="quizDuration" name="duration" required>
                             </div>
                             <div class="mb-3 form-check">
@@ -121,13 +122,13 @@
                         const quizTitle = button.getAttribute('data-quiz-title');
                         const quizDuration = button.getAttribute('data-quiz-duration');
                         const quizActive = button.getAttribute('data-quiz-active') === 'True';
-                        
+
                         // Get the form element
                         const form = document.getElementById('editQuizForm');
-                        
+
                         // Set the form action with the correct quiz ID
                         form.action = `/edit_quiz/${quizId}`;
-                        
+
                         // Populate form fields
                         document.getElementById('quizTitle').value = quizTitle;
                         document.getElementById('quizDuration').value = quizDuration;
