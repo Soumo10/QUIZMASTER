@@ -1,13 +1,22 @@
-from flask import Flask, render_template, request, redirect, url_for, send_from_directory
+from flask import Flask, render_template, request, redirect, url_for, send_file
 from flask import current_app as app
 from datetime import date
+# import io
+# import base64
+# from sqlalchemy import func
+# from datetime import datetime
+
+# #imports for graph
+# import matplotlib.pyplot as plt
+# import matplotlib
+# matplotlib.use('Agg')
 
 from .models import *
 db.create_all()
 
 @app.route("/")
 def home():
-    return "<h2>Welcome to Quiz Master App</h2>"
+    return render_template("index.html")
 
 @app.route("/login", methods=["GET", "POST"])
 def user_login():
@@ -59,21 +68,34 @@ def user_signup():
 
 @app.route("/admin_dash")
 def admin_dashboard():
-    subjects = Subject.query.all()
-    return render_template("admin_dash.html", name=request.args.get('email'), subjects=subjects, users={}, msg="")
+        subjects = Subject.query.all()
+        return render_template("admin_dash.html", name=request.args.get('email'), subjects=subjects, users={}, msg="")
 
-# #Route to show Quiz in admin dashboard  
-# @app.route("/show_quiz")
-# def show_quiz():
-#     # Fetch all quizzes from the database
-#     quizzes = Quiz.query.all()
-#     return render_template("show_quiz.html", quizzes=quizzes, name=request.args.get('email', 'Admin'))
-
-
-# #Route for quiz Management
-# @app.route("/quiz-mgmt")
-# def quiz_management():
-#     return render_template("quiz-mgmt.html", name=request.args.get('email'))
+# Route for Quiz Management
+@app.route("/quiz-mgmt")
+def quiz_management():
+    # Fetch all quiz attempts with related data
+    all_attempts = Score.query.join(User).join(Quiz).join(Subject).join(Chapter).order_by(Score.attempt_date.asc()).all()
+    
+    # Dictionary to store the attempt count for each (user, quiz) combination
+    attempt_counts = {}
+    
+    # Process attempts to assign attempt numbers
+    for attempt in all_attempts:
+        key = (attempt.user_id, attempt.quiz_id)
+        if key not in attempt_counts:
+            attempt_counts[key] = 0
+        attempt_counts[key] += 1
+        # Attach the attempt number to the attempt object
+        attempt.attempt_number = attempt_counts[key]
+    
+    # Sort attempts by attempt_date (newest first) for display
+    all_attempts.sort(key=lambda x: x.attempt_date, reverse=True)
+    
+    # Pass the email from request args as name for consistency
+    name = request.args.get('email', 'Admin')
+    
+    return render_template("quiz-mgmt.html", name=name, attempts=all_attempts)
 
 
 #Route to show users in admin dashboard
@@ -102,32 +124,144 @@ def delete_user(user_id):
     return redirect(url_for("show_user"))
 
 
-#Route to show summary charts
-@app.route("/summary_charts")
-def summary_charts():
-    # Get all subjects
-    subjects = Subject.query.all()
+#Route for Admin Search
+@app.route('/admin/search')
+def admin_search():
+    query = request.args.get('query', '').strip()
     
-    # Get top scores for each subject
+    # Initialize empty lists for results
+    users, subjects, quizzes = [], [], []
+    
+    if query:
+        # Search users by name, email
+        users = User.query.filter(
+            db.or_(
+                User.full_name.ilike(f"%{query}%"),
+                User.email.ilike(f"%{query}%")
+            )
+        ).filter_by(role=1).all()  # Only regular users
+        
+        # Search subjects by name
+        subjects = Subject.query.filter(Subject.name.ilike(f"%{query}%")).all()
+        
+        # Search quizzes by name
+        quizzes = Quiz.query.filter(Quiz.title.ilike(f"%{query}%")).all()
+    
+    # Fetch additional details for rendering
+    user_data = []
+    for user in users:
+        user_quizzes = QuizAttempt.query.filter_by(user_id=user.id).all()
+        user_data.append({
+            'user': user,
+            'quiz_attempts': [
+                {
+                    'quiz': attempt.quiz,
+                    'subject': attempt.quiz.subject,
+                    'chapter': attempt.quiz.chapter
+                } for attempt in user_quizzes
+            ]
+        })
+    
+    # Fetch chapters and quizzes for subjects
     subject_data = []
     for subject in subjects:
-        # Find quizzes for this subject
-        quizzes = Quiz.query.filter_by(subject_id=subject.id).all()
-        quiz_ids = [quiz.id for quiz in quizzes]
-        
-        # If there are quizzes for this subject, find the highest score
-        if quiz_ids:
-            highest_score = db.session.query(db.func.max(Score.score)).filter(Score.quiz_id.in_(quiz_ids)).scalar()
-            attempts = QuizAttempt.query.filter(QuizAttempt.quiz_id.in_(quiz_ids)).count()
-            subject_data.append({
-                'name': subject.name,
-                'top_score': highest_score if highest_score else 0,
-                'attempts': attempts
-            })
+        chapters = Chapter.query.filter_by(subject_id=subject.id).all()
+        subject_data.append({
+            'subject': subject,
+            'chapters': [
+                {
+                    'chapter': chapter,
+                    'quizzes': Quiz.query.filter_by(chapter_id=chapter.id).all()
+                } for chapter in chapters
+            ]
+        })
     
-    return render_template("summary_charts.html", 
-                          subject_data=subject_data,
-                          name=request.args.get('email', 'Admin'))
+    # Fetch subject and chapter details for quizzes
+    quiz_data = []
+    for quiz in quizzes:
+        quiz_data.append({
+            'quiz': quiz,
+            'subject': quiz.subject,
+            'chapter': quiz.chapter
+        })
+    
+    return render_template('admin_dash.html', 
+                            query=query, 
+                            user_data=user_data, 
+                            subject_data=subject_data, 
+                            quiz_data=quiz_data,
+                            subjects=Subject.query.all())  # Keep original subjects for the table
+
+
+#Route for User Search
+@app.route('/user/search')
+def user_search():
+    email = request.args.get('email')
+    query = request.args.get('query', '').strip()
+    
+    # Validate email and fetch user
+    if not email:
+        print("No email provided in search request")
+        return redirect(url_for('user_login'))
+    
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        print(f"No user found for email: {email}")
+        return redirect(url_for('user_login'))
+    
+    print(f"Processing search for user: {user.email}, query: '{query}'")
+    
+    # Base variables for template
+    scores = []
+    attempts_dict = {}
+    
+    if query:
+        # Search across Score, Quiz, Subject, and Chapter
+        scores_query = Score.query.filter_by(user_id=user.id).join(Quiz).join(Subject, isouter=True).join(Chapter, isouter=True)
+        
+        # Apply filters based on query
+        scores = scores_query.filter(
+            db.or_(
+                Subject.name.ilike(f"%{query}%"),
+                Chapter.name.ilike(f"%{query}%"),
+                Quiz.title.ilike(f"%{query}%"),
+                Score.attempt_date.ilike(f"%{query}%")
+            )
+        ).all()
+        
+        # Handle numeric search (score or correct answers)
+        if query.isdigit():
+            numeric_query = int(query)
+            numeric_scores = []
+            for score in scores_query.all():  # Check all scores for numeric match
+                total_questions = len(score.quiz.questions) if score.quiz else 0
+                correct_answers = round(score.score * total_questions / 100) if total_questions else 0
+                if score.score == numeric_query or correct_answers == numeric_query:
+                    numeric_scores.append(score)
+            scores.extend(numeric_scores)
+        
+        # Remove duplicates while preserving order
+        scores = list(dict.fromkeys(scores))
+        print(f"Found {len(scores)} scores matching query: {query}")
+        
+        # Fetch attempts for all found scores
+        attempts = QuizAttempt.query.filter_by(user_id=user.id).filter(QuizAttempt.quiz_id.in_([score.quiz_id for score in scores])).all()
+        attempts_dict = {attempt.quiz_id: attempt.attempt_count for attempt in attempts}
+    
+    else:
+        # No query: show all scores
+        scores = Score.query.filter_by(user_id=user.id).all()
+        attempts = QuizAttempt.query.filter_by(user_id=user.id).all()
+        attempts_dict = {attempt.quiz_id: attempt.attempt_count for attempt in attempts}
+        print(f"No query provided, showing all {len(scores)} scores for user")
+    
+    # Render template with consistent variables
+    return render_template('quiz_scores.html',
+                          user=user,
+                          scores=scores,
+                          attempts=attempts_dict,
+                          email=email,
+                          query=query)
 
 
 
@@ -142,7 +276,12 @@ def user_dashboard():
     quizzes = Quiz.query.filter_by(is_active=True).all()
     scores = Score.query.filter_by(user_id=user.id).all()
     
-    return render_template("user_dash.html", user=user, full_name=user.full_name, scores=scores, quizzes=quizzes, msg=request.args.get('msg', ''))
+    return render_template("user_dash.html", 
+                           user=user, 
+                           full_name=user.full_name, 
+                           scores=scores, 
+                           quizzes=quizzes, 
+                           msg=request.args.get('msg', ''))
 
 
 # Routes for Subjects (Admin functionality)
@@ -219,7 +358,7 @@ def new_chapter(subject_id):
         db.session.add(new_chapter)
         db.session.commit()
         print(f"Chapter {name} created successfully for subject {subject_id}")
-        return redirect(url_for("admin_dashboard"))
+        return redirect(url_for("show_chapters", subject_id=subject_id))
     # Pass the subject_id to the template
     return render_template("new-chapter.html", subject_id=subject_id, msg="")
 
@@ -264,7 +403,7 @@ def delete_chapter(chapter_id):
     Question.query.filter_by(chapter_id=chapter.id).delete()
     db.session.delete(chapter)
     db.session.commit()
-    return redirect(url_for('admin_dashboard'))
+    return redirect(url_for('show_chapters', subject_id=chapter.subject_id))
 
 
 # Routes for Quizzes (Admin functionality)
@@ -488,8 +627,6 @@ def delete_question(question_id):
 # User part Routes
 
 
-
-
 # Routes for User Taking Quiz (User functionality)
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory
 from datetime import date, datetime, timedelta
@@ -604,6 +741,11 @@ def take_quiz(quiz_id):
 @app.route("/quiz_scores")
 def quiz_scores():
     email = request.args.get('email')
+    
+    # If no email is provided, try to redirect to user login
+    if not email:
+        return redirect(url_for('user_login'))
+    
     user = User.query.filter_by(email=email).first()
     
     if not user:
@@ -620,7 +762,11 @@ def quiz_scores():
     attempts_dict = {attempt.quiz_id: attempt.attempt_count for attempt in attempts}
     
     print(f"Rendering quiz_scores for user: {user.email} with {len(scores)} scores")  # Debugging
-    return render_template('quiz_scores.html', user=user, scores=scores, attempts=attempts_dict, email=email)
+    return render_template('quiz_scores.html', 
+                           user=user, 
+                           scores=scores, 
+                           attempts=attempts_dict, 
+                           email=email)
 
 
 # NEWLY ADDED ROUTES FOR QUIZ INTERFACE
@@ -703,3 +849,26 @@ def quiz_question(quiz_id, question_number):
                           show_progress_bar=True,
                           email=email)
 
+# #Routes for Summary Charts
+# @app.route('/summary')
+# def summary():
+#     return render_template('summary_charts.html')
+
+
+# #bar graph
+# lables=[manage_subjects,quiz_scores]
+# sizes=[]
+# plt.bar=(lables,sizes)
+# plt.xlabel('subjects')
+# plt.ylabel('scores')
+# plt.title('Subject Wise top Scores')
+# plt.savefig('static/bar.png')
+
+# #pie chart
+# lables=[manage_subjects,attempts]
+# sizes=[]
+# plt.pie=(lables,sizes)
+# plt.xlabel('subjects')
+# plt.ylabel('attempts')
+# plt.title('Subject Wise User Attempts')
+# plt.savefig('static/pie.png')

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css">
+    <title>Summary</title>
+</head>
+<body>
+    <div class="bordertime">
+        <div class="button-container">
+            <a href="/admin_dash"><button class="nav-button">Home |</button></a>
+            <a href="/quiz-mgmt"><button class="nav-button">Quiz |</button></a>
+            <a href="/show_user"><button class="nav-button">Users |</button></a>
+            <a href="/summary_charts"><button class="nav-button">Summary |</button></a>
+            <a href="/login"><button class="nav-button">Logout</button></a>
+            <input class="search" type="search" placeholder="Search">
+            <button class="searching">Search</button>
+            <h4 class="text">Welcome {{ name }}</h4>
+        </div>  
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+            }
+            .header {
+                background-color: #f0f0f0;
+                padding: 10px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                border-radius: 5px;
+                border: 1px solid #ccc;
+            }
+            .nav a {
+                margin-right: 10px;
+                text-decoration: none;
+                color: #333;
+            }
+            .charts {
+                display: flex;
+                justify-content: space-around;
+                margin-top: 20px;
+            }
+            .chart {
+                width: 45%;
+            }
+            h1 {
+                text-align: center;
+                color: #4a86e8;
+            }
+            .hidden {
+                display: none;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Summary Charts</h1>
+        <div class="charts">
+            <!-- Admin View -->
+            <div class="chart {% if not is_admin %}hidden{% endif %}" id="admin-bar-chart">
+                <h2>Subject-wise Top Scores</h2>
+                <img src="/static/bar.png" alt="Bar Chart">
+            </div>
+            <div class="chart {% if not is_admin %}hidden{% endif %}" id="admin-pie-chart">
+                <h2>Subject-wise User Attempts</h2>
+                <img src="/static/pie.png" alt="Pie Chart">
+            </div>
+            
+            <!-- User View -->
+            <div class="chart {% if is_admin %}hidden{% endif %}" id="user-bar-chart">
+                <h2>Subject-wise Number of Quizzes</h2>
+                <img src="/static/bar.png" alt="Bar Chart">
+            </div>
+            <div class="chart {% if is_admin %}hidden{% endif %}" id="user-pie-chart">
+                <h2>Month-wise Number of Quizzes Attempted</h2>
+                <img src="/static/pie.png" alt="Pie Chart">
+            </div>
+        </div>
+</body>
+</html>

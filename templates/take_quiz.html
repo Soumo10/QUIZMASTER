@@ -34,7 +34,7 @@
           {% for option in question.options %}
           <div class="option">
             <input type="radio" id="option_{{ question.id }}_{{ option.id }}" name="question_{{ question.id }}"
-              value="{{ option.id }}" required class="question-option-{{ question.id }}">
+              value="{{ option.id }}" class="question-option-{{ question.id }}">
             <label for="option_{{ question.id }}_{{ option.id }}">{{ option.option_text }}</label>
           </div>
           {% endfor %}

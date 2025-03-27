@@ -14,10 +14,10 @@
   <!-- top-navbar -->
   <div class="bordertime">
     <div class="button-container">
-      <a href="{{ url_for('user_dash') }}">
+      <a href="{{ url_for('user_dash', email=user.email) }}">
         <button class="nav-button">Home |</button>
       </a>
-      <a href="{{ url_for('quiz_scores') }}">
+      <a href="{{ url_for('quiz_scores', email=user.email) }}">
         <button class="nav-button">Score |</button>
       </a>
       <button class="nav-button">Summary |</button>

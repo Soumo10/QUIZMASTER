@@ -85,7 +85,7 @@
                             {% endif %}
                             {% endfor %}
                         </td>
-                        <!-- <td>{{ question.hint|default('None') }}</td> -->
+                        
                         <td>
                             <!-- Button to include options data -->
                             <button class="action-btn edit-btn" data-bs-toggle="modal"
@@ -142,11 +142,6 @@
                             <textarea class="form-control" id="questionText" name="question_text" rows="3"
                                 required></textarea>
                         </div>
-
-                        <!-- <div class="mb-3">
-                            <label for="hint" class="form-label">Hint (Optional)</label>
-                            <input type="text" class="form-control" id="hint" name="hint">
-                        </div> -->
 
                         <div class="mb-3">
                             <label class="form-label">Options:</label>
@@ -233,11 +228,6 @@
 
             document.getElementById('questionText').value = questionText;
             
-            // Check if hint element exists before updating it
-            // const hintElement = document.getElementById('hint');
-            // if (hintElement) {
-            //     hintElement.value = questionHint;
-            // }
 
             // Populate options from data attributes
             const letters = ['A', 'B', 'C', 'D'];

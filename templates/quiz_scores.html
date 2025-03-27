@@ -14,18 +14,32 @@
   <!-- top-navbar -->
   <div class="bordertime">
     <div class="button-container">
-      <a href="{{ url_for('user_dash') }}">
+      <a href="{{ url_for('user_dash', email=user.email) }}">
         <button class="nav-button">Home |</button>
       </a>
-      <a href="{{ url_for('quiz_scores') }}">
+      <a href="{{ url_for('quiz_scores', email=user.email) }}">
         <button class="nav-button">Score |</button>
       </a>
       <button class="nav-button">Summary |</button>
       <a href="{{ url_for('user_login') }}">
         <button class="nav-button">Logout</button>
       </a>
+
+      <!-- Search Container -->
+      
+        <div class="search-container">
+          
+          <form action="{{ url_for('user_search') }}" method="get">
+            <input type="hidden" name="email" value="{{ email }}">
+            <input type="search" name="query" class="search">
+            <button type="submit" class="searching">Search</button>
+          </form>
+        </div>
+      
+
       <h4 class="text">Welcome {{ user.full_name }}</h4>
     </div>
+
 
     <div class="topuser">
       <h2>Your Quiz Performance</h2>
@@ -42,26 +56,35 @@
           </tr>
         </thead>
         <tbody>
+          {% if scores %}
           {% for score in scores %}
           <tr>
             <td>{{ score.quiz.title }}</td>
             <td>{{ score.quiz.subject.name }}</td>
             <td>{{ score.quiz.chapter.name }}</td>
+            <td>
+              {% set total_questions = score.quiz.questions|length %}
+              {% set correct_answers = (score.score * total_questions / 100)|round|int %}
+              {{ correct_answers }}/{{ total_questions }}
+            </td>
             <td>{{ score.score }}%</td>
             <td>{{ score.attempt_date }}</td>
             <td>
-              {% for attempt in attempts %}
-                {% if attempt.quiz_id == score.quiz_id %}
-                  {{ attempt.attempt_count }}
-                {% endif %}
-              {% endfor %}
+              {{ attempts.get(score.quiz_id, 0) }}
             </td>
           </tr>
+          {% endfor %}
           {% else %}
           <tr>
-            <td colspan="6" class="text-center">You haven't taken any quizzes yet.</td>
+            <td colspan="7" class="text-center">
+              {% if query %}
+              No quiz scores found matching "{{ query }}".
+              {% else %}
+              You haven't taken any quizzes yet.
+              {% endif %}
+            </td>
           </tr>
-          {% endfor %}
+          {% endif %}
         </tbody>
       </table>
     </div>

@@ -14,7 +14,7 @@
     <div class="bordertime">
         <div class="button-container">
             <a href="/admin_dash"><button class="nav-button">Home |</button></a>
-            <a href="/show_quiz"><button class="nav-button">Quiz |</button></a>
+            <a href="/quiz-mgmt"><button class="nav-button">Quiz |</button></a>
             <a href="/show_user"><button class="nav-button">Users |</button></a>
             <button class="nav-button">Summary |</button>
             <a href="/login"><button class="nav-button">Logout</button></a>
@@ -118,7 +118,7 @@
                     const dob = button.getAttribute('data-user-dob');
                     const qualifications = button.getAttribute('data-user-qualifications');
                     
-                    // Update the modal's content
+                    // For Update the modal's content
                     document.getElementById('modalFullname').textContent = fullname;
                     document.getElementById('modalEmail').textContent = email;
                     document.getElementById('modalDob').textContent = dob;

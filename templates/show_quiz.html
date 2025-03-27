@@ -43,7 +43,6 @@
                         <td>{{ quiz.title }}</td>
                         <td>{{ quiz.duration }} seconds</td>
                         <td>{{ quiz.created_at }}</td>
-                        <!-- In show_quiz.html, find this section and update the SHOW button link: -->
 
                         <td>
                             <a href="{{ url_for('manage_questions', quiz_id=quiz.id) }}">
@@ -123,10 +122,9 @@
                         const quizDuration = button.getAttribute('data-quiz-duration');
                         const quizActive = button.getAttribute('data-quiz-active') === 'True';
 
-                        // Get the form element
+                        //  the form element
                         const form = document.getElementById('editQuizForm');
 
-                        // Set the form action with the correct quiz ID
                         form.action = `/edit_quiz/${quizId}`;
 
                         // Populate form fields
