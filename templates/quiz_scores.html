@@ -57,33 +57,35 @@
         </thead>
         <tbody>
           {% if scores %}
-          {% for score in scores %}
-          <tr>
-            <td>{{ score.quiz.title }}</td>
-            <td>{{ score.quiz.subject.name }}</td>
-            <td>{{ score.quiz.chapter.name }}</td>
-            <td>
-              {% set total_questions = score.quiz.questions|length %}
-              {% set correct_answers = (score.score * total_questions / 100)|round|int %}
-              {{ correct_answers }}/{{ total_questions }}
-            </td>
-            <td>{{ score.score }}%</td>
-            <td>{{ score.attempt_date }}</td>
-            <td>
-              {{ attempts.get(score.quiz_id, 0) }}
-            </td>
-          </tr>
-          {% endfor %}
-          {% else %}
-          <tr>
-            <td colspan="7" class="text-center">
-              {% if query %}
-              No quiz scores found matching "{{ query }}".
-              {% else %}
-              You haven't taken any quizzes yet.
+            {% for score in scores %}
+              {% if score.quiz and score.quiz.subject and score.quiz.chapter %}
+                <tr>
+                  <td>{{ score.quiz.title or 'N/A' }}</td>
+                  <td>{{ score.quiz.subject.name or 'N/A' }}</td>
+                  <td>{{ score.quiz.chapter.name or 'N/A' }}</td>
+                  <td>
+                    {% set total_questions = score.quiz.questions|length if score.quiz.questions else 0 %}
+                    {% set correct_answers = (score.score * total_questions / 100)|round|int if total_questions > 0 else 0 %}
+                    {{ correct_answers }}/{{ total_questions }}
+                  </td>
+                  <td>{{ score.score }}%</td>
+                  <td>{{ score.attempt_date or 'N/A' }}</td>
+                  <td>
+                    {{ attempts.get(score.quiz_id, 0) }}
+                  </td>
+                </tr>
               {% endif %}
-            </td>
-          </tr>
+            {% endfor %}
+          {% else %}
+            <tr>
+              <td colspan="7" class="text-center">
+                {% if query %}
+                  No quiz scores found matching "{{ query }}".
+                {% else %}
+                  You haven't taken any quizzes yet.
+                {% endif %}
+              </td>
+            </tr>
           {% endif %}
         </tbody>
       </table>

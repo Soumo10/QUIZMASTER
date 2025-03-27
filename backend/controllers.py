@@ -75,27 +75,34 @@ def admin_dashboard():
 @app.route("/quiz-mgmt")
 def quiz_management():
     # Fetch all quiz attempts with related data
-    all_attempts = Score.query.join(User).join(Quiz).join(Subject).join(Chapter).order_by(Score.attempt_date.asc()).all()
+    all_attempts = Score.query.join(User).join(Quiz, isouter=True).join(Subject, isouter=True).join(Chapter, isouter=True).order_by(Score.attempt_date.asc()).all()
     
     # Dictionary to store the attempt count for each (user, quiz) combination
     attempt_counts = {}
     
-    # Process attempts to assign attempt numbers
+    # Filter out attempts with incomplete data
+    filtered_attempts = []
     for attempt in all_attempts:
-        key = (attempt.user_id, attempt.quiz_id)
-        if key not in attempt_counts:
-            attempt_counts[key] = 0
-        attempt_counts[key] += 1
-        # Attach the attempt number to the attempt object
-        attempt.attempt_number = attempt_counts[key]
+        # Check if the attempt has all required relationships
+        if attempt.user and attempt.quiz and attempt.quiz.subject and attempt.quiz.chapter:
+            key = (attempt.user_id, attempt.quiz_id)
+            if key not in attempt_counts:
+                attempt_counts[key] = 0
+            attempt_counts[key] += 1
+            # Attach the attempt number to the attempt object
+            attempt.attempt_number = attempt_counts[key]
+            filtered_attempts.append(attempt)
+        else:
+            # Log incomplete attempts for debugging
+            print(f"Incomplete attempt: User={attempt.user}, Quiz={attempt.quiz}")
     
     # Sort attempts by attempt_date (newest first) for display
-    all_attempts.sort(key=lambda x: x.attempt_date, reverse=True)
+    filtered_attempts.sort(key=lambda x: x.attempt_date, reverse=True)
     
     # Pass the email from request args as name for consistency
     name = request.args.get('email', 'Admin')
     
-    return render_template("quiz-mgmt.html", name=name, attempts=all_attempts)
+    return render_template("quiz-mgmt.html", name=name, attempts=filtered_attempts)
 
 
 #Route to show users in admin dashboard
@@ -211,16 +218,12 @@ def user_search():
     
     print(f"Processing search for user: {user.email}, query: '{query}'")
     
-    # Base variables for template
-    scores = []
-    attempts_dict = {}
+    # Base query for scores
+    scores_query = Score.query.filter_by(user_id=user.id)
     
+    # Apply search filters if query exists
     if query:
-        # Search across Score, Quiz, Subject, and Chapter
-        scores_query = Score.query.filter_by(user_id=user.id).join(Quiz).join(Subject, isouter=True).join(Chapter, isouter=True)
-        
-        # Apply filters based on query
-        scores = scores_query.filter(
+        scores = scores_query.join(Quiz).join(Subject, isouter=True).join(Chapter, isouter=True).filter(
             db.or_(
                 Subject.name.ilike(f"%{query}%"),
                 Chapter.name.ilike(f"%{query}%"),
@@ -228,37 +231,33 @@ def user_search():
                 Score.attempt_date.ilike(f"%{query}%")
             )
         ).all()
-        
-        # Handle numeric search (score or correct answers)
-        if query.isdigit():
-            numeric_query = int(query)
-            numeric_scores = []
-            for score in scores_query.all():  # Check all scores for numeric match
-                total_questions = len(score.quiz.questions) if score.quiz else 0
-                correct_answers = round(score.score * total_questions / 100) if total_questions else 0
-                if score.score == numeric_query or correct_answers == numeric_query:
-                    numeric_scores.append(score)
-            scores.extend(numeric_scores)
-        
-        # Remove duplicates while preserving order
-        scores = list(dict.fromkeys(scores))
-        print(f"Found {len(scores)} scores matching query: {query}")
-        
-        # Fetch attempts for all found scores
-        attempts = QuizAttempt.query.filter_by(user_id=user.id).filter(QuizAttempt.quiz_id.in_([score.quiz_id for score in scores])).all()
-        attempts_dict = {attempt.quiz_id: attempt.attempt_count for attempt in attempts}
-    
     else:
-        # No query: show all scores
-        scores = Score.query.filter_by(user_id=user.id).all()
-        attempts = QuizAttempt.query.filter_by(user_id=user.id).all()
-        attempts_dict = {attempt.quiz_id: attempt.attempt_count for attempt in attempts}
-        print(f"No query provided, showing all {len(scores)} scores for user")
+        scores = scores_query.all()
     
-    # Render template with consistent variables
+    # Debug: Check scores and their relationships
+    filtered_scores = []
+    for score in scores:
+        try:
+            # Ensure each score has a valid quiz and subject
+            if score.quiz and score.quiz.subject:
+                filtered_scores.append(score)
+            else:
+                print(f"Skipping score {score.id}: Missing quiz or subject")
+        except Exception as e:
+            print(f"Error processing score {score.id}: {e}")
+    
+    # Fetch attempt counts
+    attempts = QuizAttempt.query.filter_by(user_id=user.id).all()
+    attempts_dict = {attempt.quiz_id: attempt.attempt_count for attempt in attempts}
+    
+    # More debug information
+    print(f"Total scores found: {len(scores)}")
+    print(f"Filtered scores: {len(filtered_scores)}")
+    
+    # Render template with filtered scores
     return render_template('quiz_scores.html',
                           user=user,
-                          scores=scores,
+                          scores=filtered_scores,
                           attempts=attempts_dict,
                           email=email,
                           query=query)
