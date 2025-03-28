@@ -1,15 +1,15 @@
-from flask import Flask, render_template, request, redirect, url_for, send_file
+from flask import Flask, render_template, request, redirect, url_for
 from flask import current_app as app
 from datetime import date
-# import io
-# import base64
-# from sqlalchemy import func
-# from datetime import datetime
+import os
+from sqlalchemy import func
+from collections import defaultdict
+from datetime import datetime
 
-# #imports for graph
-# import matplotlib.pyplot as plt
-# import matplotlib
-# matplotlib.use('Agg')
+#imports for graph
+import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.use('Agg')
 
 from .models import *
 db.create_all()
@@ -28,7 +28,7 @@ def user_login():
         if usr and usr.pwd == pwd:  # Verify password matches
             if usr.role == 0:  # Admin
                 print("logged in as Admin")
-                return redirect(url_for('admin_dashboard'))
+                return redirect(url_for('admin_dashboard', email=usr.email))
             elif usr.role == 1:  # Regular user
                 print("logged in as User")
                 scores = Score.query.filter_by(user_id=usr.id).all()
@@ -68,38 +68,41 @@ def user_signup():
 
 @app.route("/admin_dash")
 def admin_dashboard():
-        subjects = Subject.query.all()
-        return render_template("admin_dash.html", name=request.args.get('email'), subjects=subjects, users={}, msg="")
+    email = request.args.get('email')
+    user = User.query.filter_by(email=email).first()
+    name = user.full_name if user else "Admin"
+    subjects = Subject.query.all()
+    return render_template("admin_dash.html", name=name, subjects=subjects, users={}, msg="", email=email)
 
 # Route for Quiz Management
 @app.route("/quiz-mgmt")
 def quiz_management():
-    # Fetch all quiz attempts with related data
+    # Fetching all quiz attempts with related data
     all_attempts = Score.query.join(User).join(Quiz, isouter=True).join(Subject, isouter=True).join(Chapter, isouter=True).order_by(Score.attempt_date.asc()).all()
     
     # Dictionary to store the attempt count for each (user, quiz) combination
     attempt_counts = {}
     
-    # Filter out attempts with incomplete data
+    # Filtering out attempts with incomplete data
     filtered_attempts = []
     for attempt in all_attempts:
-        # Check if the attempt has all required relationships
+        # Checking if the attempt has all required relationships
         if attempt.user and attempt.quiz and attempt.quiz.subject and attempt.quiz.chapter:
             key = (attempt.user_id, attempt.quiz_id)
             if key not in attempt_counts:
                 attempt_counts[key] = 0
             attempt_counts[key] += 1
-            # Attach the attempt number to the attempt object
+            # Attaching the attempt number to the attempt object
             attempt.attempt_number = attempt_counts[key]
             filtered_attempts.append(attempt)
         else:
             # Log incomplete attempts for debugging
             print(f"Incomplete attempt: User={attempt.user}, Quiz={attempt.quiz}")
     
-    # Sort attempts by attempt_date (newest first) for display
+    # Sorting attempts by attempt_date (newest first) for display
     filtered_attempts.sort(key=lambda x: x.attempt_date, reverse=True)
     
-    # Pass the email from request args as name for consistency
+    # Passing the email from request args as name for consistency
     name = request.args.get('email', 'Admin')
     
     return render_template("quiz-mgmt.html", name=name, attempts=filtered_attempts)
@@ -148,13 +151,13 @@ def admin_search():
             )
         ).filter_by(role=1).all()  # Only regular users
         
-        # Search subjects by name
+        # Searching subjects by name
         subjects = Subject.query.filter(Subject.name.ilike(f"%{query}%")).all()
         
-        # Search quizzes by name
+        # Searching quizzes by name
         quizzes = Quiz.query.filter(Quiz.title.ilike(f"%{query}%")).all()
     
-    # Fetch additional details for rendering
+    # Fetching additional details for rendering
     user_data = []
     for user in users:
         user_quizzes = QuizAttempt.query.filter_by(user_id=user.id).all()
@@ -169,7 +172,7 @@ def admin_search():
             ]
         })
     
-    # Fetch chapters and quizzes for subjects
+    # Fetching chapters and quizzes for subjects
     subject_data = []
     for subject in subjects:
         chapters = Chapter.query.filter_by(subject_id=subject.id).all()
@@ -183,7 +186,7 @@ def admin_search():
             ]
         })
     
-    # Fetch subject and chapter details for quizzes
+    # Fetching subject and chapter details for quizzes
     quiz_data = []
     for quiz in quizzes:
         quiz_data.append({
@@ -197,7 +200,7 @@ def admin_search():
                             user_data=user_data, 
                             subject_data=subject_data, 
                             quiz_data=quiz_data,
-                            subjects=Subject.query.all())  # Keep original subjects for the table
+                            subjects=Subject.query.all())  
 
 
 #Route for User Search
@@ -234,11 +237,11 @@ def user_search():
     else:
         scores = scores_query.all()
     
-    # Debug: Check scores and their relationships
+    # Checking scores and their relationships
     filtered_scores = []
     for score in scores:
         try:
-            # Ensure each score has a valid quiz and subject
+            # Each score has a valid quiz and subject
             if score.quiz and score.quiz.subject:
                 filtered_scores.append(score)
             else:
@@ -246,7 +249,7 @@ def user_search():
         except Exception as e:
             print(f"Error processing score {score.id}: {e}")
     
-    # Fetch attempt counts
+    # Fetching attempt counts
     attempts = QuizAttempt.query.filter_by(user_id=user.id).all()
     attempts_dict = {attempt.quiz_id: attempt.attempt_count for attempt in attempts}
     
@@ -307,10 +310,16 @@ def show_chapters(subject_id):
     # Get the subject
     subject = Subject.query.get_or_404(subject_id)
     
+    # Get name from email or use default
+    email = request.args.get('email')
+    user = User.query.filter_by(email=email).first()
+    name = user.full_name if user else "Admin"
+    
     # Get all chapters for this subject
     chapters = Chapter.query.filter_by(subject_id=subject_id).all()
     
-    return render_template("show_chapters.html",subject=subject, chapters=chapters, name=request.args.get('email'))
+    return render_template("show_chapters.html", subject=subject, chapters=chapters, name=name)
+
 
 # Route to edit a subject 
 @app.route('/edit_subject/<int:subject_id>', methods=['POST'])
@@ -368,10 +377,15 @@ def show_quizzes(subject_id, chapter_id):
     subject = Subject.query.get_or_404(subject_id)
     chapter = Chapter.query.get_or_404(chapter_id)
     
+    # Get name from email or use default
+    email = request.args.get('email')
+    user = User.query.filter_by(email=email).first()
+    name = user.full_name if user else "Admin"
+    
     # Get all quizzes for this chapter
     quizzes = Quiz.query.filter_by(chapter_id=chapter_id).all()
     
-    return render_template("show_quiz.html", subject=subject,chapter=chapter,quizzes=quizzes,name=request.args.get('email'))
+    return render_template("show_quiz.html", subject=subject, chapter=chapter, quizzes=quizzes, name=name)
 
 
 # Route to edit a chapter 
@@ -707,35 +721,6 @@ def take_quiz(quiz_id):
     return render_template("take_quiz.html", quiz=quiz, questions=questions, msg="", email=email, start_time=start_time)
 
 
-
-# # Calculate percentage or points (e.g., 100 points max)
-# final_score = (score / total_questions) * 100 if total_questions > 0 else 0
-        
-#         # Record score
-# new_score = Score(user_id=user.id, quiz_id=quiz_id, score=final_score, attempt_date=str(date.today()))
-#         # Update or create quiz attempt
-# quiz_attempt = QuizAttempt.query.filter_by(user_id=user.id, quiz_id=quiz_id).first()
-# if quiz_attempt:
-#             quiz_attempt.attempt_count += 1
-#             quiz_attempt.last_attempt_date = str(date.today())
-# else:
-#             quiz_attempt = QuizAttempt(user_id=user.id, quiz_id=quiz_id, attempt_count=1, last_attempt_date=str(date.today()))
-        
-# try:
-#             db.session.add(new_score)
-#             db.session.add(quiz_attempt)
-#             db.session.commit()
-#             print(f"Quiz {quiz_id} completed with score {final_score}")
-#             return redirect(url_for('user_dash', msg=f"Quiz completed! Score: {final_score}%"))
-#         except Exception as e:
-#             db.session.rollback()
-#             print(f"Error recording score: {e}")
-#             return render_template("take_quiz.html", msg="Error submitting quiz", quiz=quiz)
-    
-#     questions = Question.query.filter_by(quiz_id=quiz_id).all()
-#     return render_template("take_quiz.html", quiz=quiz, questions=questions, msg="")
-
-
 # Routes for Quiz Scores (User functionality)
 @app.route("/quiz_scores")
 def quiz_scores():
@@ -848,26 +833,140 @@ def quiz_question(quiz_id, question_number):
                           show_progress_bar=True,
                           email=email)
 
-# #Routes for Summary Charts
-# @app.route('/summary')
-# def summary():
-#     return render_template('summary_charts.html')
 
 
-# #bar graph
-# lables=[manage_subjects,quiz_scores]
-# sizes=[]
-# plt.bar=(lables,sizes)
-# plt.xlabel('subjects')
-# plt.ylabel('scores')
-# plt.title('Subject Wise top Scores')
-# plt.savefig('static/bar.png')
 
-# #pie chart
-# lables=[manage_subjects,attempts]
-# sizes=[]
-# plt.pie=(lables,sizes)
-# plt.xlabel('subjects')
-# plt.ylabel('attempts')
-# plt.title('Subject Wise User Attempts')
-# plt.savefig('static/pie.png')
+@app.route("/summary")
+def summary_charts():
+    # Debugging - print received email
+    email = request.args.get('email')
+    print(f"Received email in summary route: {email}")  # Debug line
+    
+    if not email:
+        print("No email provided in summary request")  # Debug line
+        return redirect(url_for('user_login'))
+    
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        print(f"No user found for email: {email}")  # Debug line
+        return redirect(url_for('user_login'))
+    
+    print(f"User found: {user.email}, role: {user.role}")  # Debug line
+    
+    is_admin = user.role == 0
+    
+    try:
+        if is_admin:
+            # ADMIN VIEW
+            # Subject-wise top scores (bar chart)
+            admin_bar_data = db.session.query(
+                Subject.name,
+                func.max(Score.score).label('top_score')
+            ).join(Quiz, Score.quiz_id == Quiz.id)\
+             .join(Chapter, Quiz.chapter_id == Chapter.id)\
+             .join(Subject, Chapter.subject_id == Subject.id)\
+             .group_by(Subject.name).all()
+            
+            # Subject-wise user attempts (pie chart)
+            admin_pie_data = db.session.query(
+                Subject.name,
+                func.count(Score.id).label('attempt_count')
+            ).join(Quiz, Score.quiz_id == Quiz.id)\
+             .join(Chapter, Quiz.chapter_id == Chapter.id)\
+             .join(Subject, Chapter.subject_id == Subject.id)\
+             .group_by(Subject.name).all()
+            
+            # Generate bar chart
+            plt.figure(figsize=(10, 6))
+            plt.bar([item[0] for item in admin_bar_data], 
+                   [item[1] for item in admin_bar_data], 
+                   color='skyblue')
+            plt.title('Subject-wise Top Scores', fontsize=15)
+            plt.xlabel('Subjects', fontsize=12)
+            plt.ylabel('Top Score (%)', fontsize=12)
+            plt.xticks(rotation=45)
+            plt.tight_layout()
+            bar_path = f"static/summary_{user.id}_bar.png"
+            plt.savefig(bar_path)
+            plt.close()
+            
+            # Generate pie chart
+            plt.figure(figsize=(8, 8))
+            plt.pie([item[1] for item in admin_pie_data], 
+                   labels=[item[0] for item in admin_pie_data], 
+                   autopct='%1.1f%%',
+                   startangle=140)
+            plt.title('Subject-wise User Attempts', fontsize=15)
+            plt.axis('equal')
+            plt.tight_layout()
+            pie_path = f"static/summary_{user.id}_pie.png"
+            plt.savefig(pie_path)
+            plt.close()
+            
+            chart_titles = {
+                'bar_title': 'Subject-wise Top Scores',
+                'pie_title': 'Subject-wise User Attempts'
+            }
+            
+        else:
+
+            # USER VIEW
+            # Subject-wise quiz attempts (bar chart)
+            user_bar_data = db.session.query(
+                Subject.name,
+                func.count(Score.id).label('attempt_count')
+            ).join(Quiz, Score.quiz_id == Quiz.id)\
+             .join(Chapter, Quiz.chapter_id == Chapter.id)\
+             .join(Subject, Chapter.subject_id == Subject.id)\
+             .filter(Score.user_id == user.id)\
+             .group_by(Subject.name).all()
+            
+            # Month-wise quiz attempts (pie chart)
+            user_pie_data = db.session.query(
+                func.strftime('%Y-%m', Score.attempt_date).label('month'),
+                func.count(Score.id).label('attempt_count')
+            ).filter(Score.user_id == user.id)\
+             .group_by('month').all()
+            
+            # Generate bar chart
+            plt.figure(figsize=(10, 6))
+            plt.bar([item[0] for item in user_bar_data], 
+                   [item[1] for item in user_bar_data], 
+                   color='lightgreen')
+            plt.title('Subject-wise Quizzes Attempted', fontsize=15)
+            plt.xlabel('Subjects', fontsize=12)
+            plt.ylabel('Number of Quizzes', fontsize=12)
+            plt.xticks(rotation=45)
+            plt.tight_layout()
+            bar_path = f"static/summary_{user.id}_bar.png"
+            plt.savefig(bar_path)
+            plt.close()
+            
+            # Generate pie chart
+            plt.figure(figsize=(8, 8))
+            plt.pie([item[1] for item in user_pie_data], 
+                   labels=[item[0] for item in user_pie_data], 
+                   autopct='%1.1f%%',
+                   startangle=140)
+            plt.title('Month-wise Quizzes Attempted', fontsize=15)
+            plt.axis('equal')
+            plt.tight_layout()
+            pie_path = f"static/summary_{user.id}_pie.png"
+            plt.savefig(pie_path)
+            plt.close()
+            
+            chart_titles = {
+                'bar_title': 'Subject-wise Quizzes Attempted',
+                'pie_title': 'Month-wise Quizzes Attempted'
+            }
+            
+    except Exception as e:
+        print(f"Error generating charts: {e}")
+        return render_template('error.html', error_message="Error generating charts")
+    
+    return render_template('summary_charts.html',
+                         name=user.full_name,
+                         email=email,
+                         is_admin=is_admin,
+                         user_id=user.id,
+                         chart_titles=chart_titles)

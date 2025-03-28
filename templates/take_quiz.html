@@ -53,7 +53,7 @@
 
   <script>
     // Initialize timer
-    let totalSeconds = parseInt("{{ quiz.duration }}" || "0") * 60;
+    let totalSeconds = parseInt("{{ quiz.duration }}" || "0");
     if (totalSeconds <= 0) totalSeconds = 30 * 60; // Default 30 minutes if duration is invalid
 
     const timerElement = document.getElementById("time");
@@ -113,9 +113,8 @@
         alert("Time's up! Your quiz will be submitted automatically.");
         quizForm.submit();
       }
-      const displayMinutes = Math.floor(totalSeconds / 60);
-      const displaySeconds = totalSeconds % 60;
-      timerElement.textContent = `${String(displayMinutes).padStart(2, '0')}:${String(displaySeconds).padStart(2, '0')}`;
+      // Changed to show total seconds
+      timerElement.textContent = String(totalSeconds).padStart(3, '0');
     }, 1000);
   </script>
 </body>

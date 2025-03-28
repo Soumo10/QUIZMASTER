@@ -20,7 +20,9 @@
       <a href="{{ url_for('quiz_scores', email=user.email) }}">
         <button class="nav-button">Score |</button>
       </a>
-      <button class="nav-button">Summary |</button>
+      <a href="{{ url_for('summary_charts', email=user.email) }}">
+        <button class="nav-button">Summary |</button>
+      </a>
       <a href="{{ url_for('user_login') }}">
         <button class="nav-button">Logout</button>
       </a>
